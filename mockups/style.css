@@ -1,0 +1,157 @@
+
+/*********************
+General
+*********************/
+
+a {
+    text-decoration: none;
+}
+
+.button-links {
+    text-align: center;
+    margin: 2em 0;
+}
+
+.main-content {
+    margin: 0 auto;
+    padding: 0 5%;
+    width: 900px;
+}
+
+
+/*********************
+Heading
+*********************/
+
+header {
+    margin-top: 0;
+    padding: 1em 0;
+}
+
+h1, h2 {
+    text-align: center;
+    font-family: sans-serif;
+}
+
+
+/*********************
+Index
+*********************/
+
+#post-list li {
+    list-style-type: none;
+    margin: 1em 0 2em;
+    padding: inherit 0;
+    overflow: hidden;
+    border-bottom: solid gray 2px;
+}
+
+.post-title {
+    float: left;
+}
+
+.post-date {
+    float: right;
+}
+
+
+/*********************
+Detail
+*********************/
+
+#detail-title {
+    float: left;
+}
+
+#detail-date {
+    float: right;
+}
+
+.detail-header {
+    overflow: hidden;
+}
+
+.detail-text {
+    padding: 1em 5em 2em;
+    font-size: 1.2em;
+}
+
+
+/*********************
+Create & Edit
+*********************/
+
+form {
+    margin 0 auto;
+    padding: 1em;
+}
+
+form div + div {
+    margin-top: 1em;
+}
+
+label {
+    display: inline-block;
+    width: 15%;
+    text-align: right;
+}
+
+input, textarea {
+    width: 80%;
+    box-sizing: border-box;
+}
+
+input {
+    font: 2em sans-serif;
+    vertical-align: middle;
+}
+
+textarea {
+    font: 1em serif;
+    vertical-align: top;
+    height: 10em;
+    resize: vertical;
+}
+
+.button {
+    padding-left: 15%;
+}
+
+button {
+    margin-left: .5em;
+}
+
+
+/*********************
+Footer
+*********************/
+
+footer {
+    text-align: center;
+    margin: 5em 0 0;
+}
+
+
+/*********************
+Colors
+*********************/
+
+header {
+    background-color: steelblue;
+}
+
+h1, h2 {
+    color: white;
+}
+
+.button-links a, #post-list a, footer a {
+    color: steelblue;
+}
+
+.button-links a:hover, #post-list a:hover, footer a:hover {
+    color: blue;
+}
+
+#detail-title, detail-date {
+    color: black;
+}
