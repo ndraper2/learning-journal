@@ -10,7 +10,7 @@ import datetime
 
 Base = declarative_base()
 DATABASE_URL = os.environ.get(
-    'DATABASE URL',
+    'DATABASE_URL',
     'postgresql://ndraper2@localhost:5432/learning-journal'
 )
 
