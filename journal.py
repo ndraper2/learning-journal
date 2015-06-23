@@ -9,6 +9,10 @@ from sqlalchemy.ext.declarative import declarative_base
 import datetime
 
 Base = declarative_base()
+DATABASE_URL = os.environ.get(
+    'DATABASE URL',
+    'postgresql://ndraper2@localhost:5432/learning-journal'
+)
 
 
 class Entry(Base):
@@ -19,7 +23,12 @@ class Entry(Base):
     text = sa.Column(sa.UnicodeText, nullable=False)
     created = sa.Column(
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
-        )
+    )
+
+
+def init_db():
+    engine = sa.create_engine(DATABASE_URL)
+    Base.metadata.create_all(engine)
 
 
 @view_config(route_name='home', renderer='string')
