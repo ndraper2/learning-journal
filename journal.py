@@ -29,6 +29,10 @@ class Entry(Base):
         sa.DateTime, nullable=False, default=datetime.datetime.utcnow
     )
 
+    @classmethod
+    def write(cls, title=None, text=None, session=None):
+        pass
+
 
 def init_db():
     engine = sa.create_engine(DATABASE_URL)
