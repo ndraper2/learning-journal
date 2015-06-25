@@ -9,6 +9,8 @@ from sqlalchemy.ext.declarative import declarative_base
 import datetime
 from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
+from pyramid.httpexceptions import HTTPFound
+from sqlalchemy.exc import DBAPIError
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
@@ -55,10 +57,20 @@ def list_view(request):
     return {'entries': entries}
 
 
-@view_config(route_name='other', renderer='string')
-def other(request):
-    import pdb; pdb.set_trace()
-    return request.matchdict
+@view_config(route_name='add', request_method='POST')
+def add_entry(request):
+    title = request.params.get('title')
+    text = request.params.get('text')
+    Entry.write(title=title, text=text)
+    return HTTPFound(request.route_url('home'))
+
+
+@view_config(context=DBAPIError)
+def db_exception(context, request):
+    from pryamid.response import Response
+    response = Response(context.message)
+    response.status_int = 500
+    return response
 
 
 def main():
@@ -78,7 +90,7 @@ def main():
     config.include('pyramid_tm')
     config.include('pyramid_jinja2')
     config.add_route('home', '/')
-    config.add_route('other', '/other/{special_val}')
+    config.add_route('add', '/add')
     config.scan()
     app = config.make_wsgi_app()
     return app
