@@ -16,6 +16,8 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from pyramid.security import remember, forget
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
 Base = declarative_base()
@@ -130,6 +132,7 @@ def main():
     )
     config.include('pyramid_tm')
     config.include('pyramid_jinja2')
+    config.add_static_view('static', os.path.join(HERE, 'static'))
     config.add_route('home', '/')
     config.add_route('add', '/add')
     config.add_route('login', '/login')
