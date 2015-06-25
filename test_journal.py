@@ -4,6 +4,7 @@ import os
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
+import pyramid.httpexceptions as pexc
 
 TEST_DATABASE_URL = os.environ.get(
     'DATABASE_URL',
@@ -154,3 +155,18 @@ def test_post_to_add_view(app):
     actual = redirected.body
     for expected in entry_data.values():
         assert expected in actual
+
+
+def test_add_no_params(app):
+    response = app.post('/add', status=500)
+    assert 'IntegrityError' in response.body
+
+
+def test_add_get(app):
+    from webtest.app import AppError
+    entry_data = {
+        'title': 'Hello there',
+        'text': 'This is a post',
+    }
+    with pytest.raises(AppError):
+        response = app.get('/add', params=entry_data, status='3*')
