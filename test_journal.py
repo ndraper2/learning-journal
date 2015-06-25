@@ -186,7 +186,7 @@ def test_add_get(app):
         'text': 'This is a post',
     }
     with pytest.raises(AppError):
-        response = app.get('/add', params=entry_data, status='3*')
+        app.get('/add', params=entry_data, status='3*')
 
 
 def test_do_login_success(auth_req):
