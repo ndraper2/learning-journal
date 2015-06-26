@@ -1,8 +1,10 @@
 {% extends "base.jinja2" %}
 {% block body %}
-  <div id="add">
-    <a href="{{ request.route_url('create') }}" >Add a new post</a>
-  </div>
+  {% if request.authenticated_userid %}
+    <div id="add">
+      <a href="{{ request.route_url('create') }}" >Add a new post</a>
+    </div>
+  {% endif %}
   {% for entry in entries %}
   <article class="entry" id="entry={{entry.id}}">
     <h3>{{ entry.title }}</h3>
