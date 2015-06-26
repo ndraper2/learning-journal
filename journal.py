@@ -71,6 +71,11 @@ def add_entry(request):
     return HTTPFound(request.route_url('home'))
 
 
+@view_config(route_name='create', renderer='templates/create.jinja2')
+def create_view(request):
+    pass
+
+
 @view_config(context=DBAPIError)
 def db_exception(context, request):
     from pyramid.response import Response
