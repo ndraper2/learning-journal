@@ -73,7 +73,7 @@ def add_entry(request):
 
 @view_config(route_name='create', renderer='templates/create.jinja2')
 def create_view(request):
-    pass
+    return {}
 
 
 @view_config(context=DBAPIError)
@@ -142,6 +142,7 @@ def main():
     config.add_route('add', '/add')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    config.add_route('create', '/create')
     config.scan()
     app = config.make_wsgi_app()
     return app
