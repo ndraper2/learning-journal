@@ -240,6 +240,7 @@ def test_login_success(app):
     assert redirect.status_code == 302
     response = redirect.follow()
     assert response.status_code == 200
+    response = app.get('/create', status=200)
     actual = response.body
     assert INPUT_BTN in actual
 
@@ -250,6 +251,8 @@ def test_login_fails(app):
     assert response.status_code == 200
     actual = response.body
     assert "Login Failed" in actual
+    response = app.get('/create', status=200)
+    actual = response.body
     assert INPUT_BTN not in actual
 
 
@@ -258,5 +261,6 @@ def test_logout(app):
     redirect = app.get('/logout', status="3*")
     response = redirect.follow()
     assert response.status_code == 200
+    response = app.get('/create', status=200)
     actual = response.body
     assert INPUT_BTN not in actual
