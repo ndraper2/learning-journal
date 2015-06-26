@@ -1,55 +1,146 @@
-body {
-    color:#111;
-    padding:0;
-    margin:0
+/*********************
+General
+*********************/
+
+a {
+    text-decoration: none;
 }
-header{
-    margin:0;
-    padding:0 0.75em;
-    width:100%;}
-header:after{
-    content:"";
-    display:table;
-    clear:both;}
-header a{
-    text-decoration:none}
-header aside{
-    float:right;
-    text-align:right;
-    padding-right:0.75em}
-header ul{
-    list-style:none;
-    list-style-type:none;
-    display:inline-block}
-header ul li{
-    margin:0 0.25em 0 0}
-header ul li a{
-    padding:0;
-    display:inline-block}
-main{padding:0 0.75em 1em}
-main:after{
-    content:"";
-    display:table;
-    clear:both}
-main article{
-    margin-bottom:1em;
-    padding-left:0.5em}
-main article h3{margin-top:0}
-main article .entry_body{
-    margin:0.5em}
-main aside{float:right}
-main aside .field{
-    margin-bottom:1em}
-main aside .field input,
-main aside .field label,
-main aside .field textarea{
-    vertical-align:top}
-main aside .field label{
-    display:inline-block;
-    width:15%;
-    padding-top:2px}
-main aside .field input,
-main aside .field textarea{
-    width:83%}
-main aside .control_row input{
-    margin-left:16%}
+
+main {
+    margin: 0 auto;
+    padding: 0 5%;
+    max-width: 900px;
+}
+
+form {
+    margin: 1em auto;
+    padding: 1em;
+}
+
+label {
+    display: inline-block;
+    width: 11%;
+    text-align: right;
+}
+
+/*********************
+Heading
+*********************/
+
+header {
+    margin-top: 0;
+    padding: 1em 0;
+}
+
+header h1, h2 {
+    text-align: center;
+    font-family: sans-serif;
+}
+
+aside ul li {
+    list-style-type: none;
+}
+
+/*********************
+Index
+*********************/
+
+#add {
+    text-align: center;
+    margin: 2em 0;
+}
+
+.entry h3 {
+    float: left;
+}
+
+.dateline {
+    float: right;
+}
+
+.entry {
+    margin: 2em 0;
+    padding: inherit 0;
+    overflow: hidden;
+}
+
+.entry_body {
+    clear: both;
+}
+
+
+/*********************
+Detail
+*********************/
+
+
+/*********************
+Login
+*********************/
+
+#login {
+    margin: 0 auto;
+}
+
+/*********************
+Create & Edit
+*********************/
+
+.add_entry input[type=text], textarea {
+    width: 80%;
+    box-sizing: border-box;
+}
+
+.add_entry input[type=text] {
+    font: 2em sans-serif;
+    vertical-align: middle;
+}
+
+textarea {
+    font: 1em serif;
+    vertical-align: top;
+    height: 10em;
+    resize: vertical;
+}
+
+.control_row{
+    margin-left: 11%;
+    padding-left: .25em;
+}
+
+/*********************
+Footer
+*********************/
+
+footer {
+    text-align: center;
+    margin: 5em 0 0;
+}
+
+footer a {
+    margin: 0 5%;
+}
+
+/*********************
+Colors
+*********************/
+
+a {
+    color: steelblue;
+}
+
+a:hover {
+    color: blue;
+}
+
+header {
+    background-color: steelblue;
+}
+
+header h1, header h2 {
+    color: white;
+}
+
+#user-controls a {
+    color: white;
+}

@@ -4,7 +4,7 @@
   {% if error -%}
   <p class="error"><strong>Error</strong>: {{ error }}
   {%- endif %}
-  <form action="{{ request.route_url('login') }}" method="POST">
+  <form action="{{ request.route_url('login') }}" method="POST" id="login">
     <div class="field">
       <label for="username">Username</label>
       <input type="text" name="username" id="username"/>

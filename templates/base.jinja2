@@ -10,6 +10,10 @@
   </head>
   <body>
     <header>
+      <a href="{{ request.route_url('home') }}" id="header-link">
+          <h1>Python Learning Journal</h1>
+          <h2>Nicholas Draper</h2>
+      </a>
       <aside id="user-controls">
         <ul>
         {% if not request.authenticated_userid %}
@@ -19,21 +23,16 @@
         {% endif %}
         </ul>
       </aside>
-      <nav>
-        <ul>
-          <li><a href="/">Home</a></li>
-        </ul>
-      </nav>
     </header>
     <main>
-      <h1>My Python Journal</h1>
       <section id="content">
       {% block body %}
       {% endblock %}
       </section>
     </main>
     <footer>
-      <p>Created in the Code Fellows Python Dev Accelerator</p>
+      <a id="code-fellows" href="http://codefellows.org">Code Fellows</a>
+      <a id="twitter" href="https://twitter.com/ndraper22">@ndraper22</a>
     </footer>
   </body>
 </html>
