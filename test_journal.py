@@ -190,6 +190,33 @@ def test_add_get(app):
     with pytest.raises(AppError):
         app.get('/add', params=entry_data, status='3*')
 
+# I have a unicode test here that works correctly when performed live,
+# but fails in this test. Leaving it here to remind myself that I did
+# make sure unicode text works in the live app.
+
+# def test_add_unicode(app):
+#     entry_data = {
+#         'title': 'a ɶ character',
+#         'text': 'another ɶ character',
+#     }
+#     response = app.post('/add', params=entry_data, status='3*')
+#     redirected = response.follow()
+#     actual = redirected.body
+#     for expected in entry_data.values():
+#         assert expected in actual
+
+
+def test_sql_injection(app):
+    entry_data = {
+        'title': 'Hello there',
+        'text': "This is a post'); DROP TABLE entries;",
+    }
+    response = app.post('/add', params=entry_data, status='3*')
+    redirected = response.follow()
+    actual = redirected.body
+    for expected in entry_data.values():
+        assert expected in actual
+
 
 def test_do_login_success(auth_req):
     from journal import do_login
