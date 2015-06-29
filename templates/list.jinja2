@@ -2,7 +2,7 @@
 {% block body %}
   {% if request.authenticated_userid %}
     <div id="add">
-      <a href="{{ request.route_url('create') }}" >Add a new post</a>
+      <a href="{{ request.route_url('add') }}" >Add a new post</a>
     </div>
   {% endif %}
   {% for entry in entries %}

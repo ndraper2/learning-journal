@@ -63,17 +63,20 @@ def list_view(request):
     return {'entries': entries}
 
 
-@view_config(route_name='add', request_method='POST')
+@view_config(route_name='add', renderer='templates/create.jinja2')
 def add_entry(request):
-    title = request.params.get('title')
-    text = request.params.get('text')
-    Entry.write(title=title, text=text)
-    return HTTPFound(request.route_url('home'))
+    if request.method == 'POST':
+        title = request.params.get('title')
+        text = request.params.get('text')
+        Entry.write(title=title, text=text)
+        return HTTPFound(request.route_url('home'))
+    else:
+        return {}
 
 
-@view_config(route_name='create', renderer='templates/create.jinja2')
-def create_view(request):
-    return {}
+# @view_config(route_name='create', renderer='templates/create.jinja2')
+# def create_view(request):
+#     return {}
 
 
 @view_config(context=DBAPIError)
