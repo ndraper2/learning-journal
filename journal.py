@@ -51,6 +51,12 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).order_by(cls.created.desc()).all()
 
+    @classmethod
+    def search(cls, id, session=None):
+        if session is None:
+            session = DBSession
+        return session.query(cls).filter_by(id=id)
+
 
 def init_db():
     engine = sa.create_engine(DATABASE_URL)
@@ -74,9 +80,11 @@ def add_entry(request):
         return {}
 
 
-# @view_config(route_name='create', renderer='templates/create.jinja2')
-# def create_view(request):
-#     return {}
+@view_config(route_name='detail', renderer='templates/detail.jinja2')
+def detail_view(request):
+    post_id = request.matchdict.get('id', None)
+    entry = Entry.search(post_id)
+    return entry
 
 
 @view_config(context=DBAPIError)
@@ -145,7 +153,6 @@ def main():
     config.add_route('add', '/add')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-    config.add_route('create', '/create')
     config.scan()
     app = config.make_wsgi_app()
     return app
