@@ -9,8 +9,9 @@ from sqlalchemy.ext.declarative import declarative_base
 import datetime
 from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm.exc import NoResultFound
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -55,7 +56,7 @@ class Entry(Base):
     def search(cls, id, session=None):
         if session is None:
             session = DBSession
-        return session.query(cls).filter_by(id=id)
+        return session.query(cls).filter_by(id=id).one()
 
 
 def init_db():
@@ -83,8 +84,11 @@ def add_entry(request):
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
 def detail_view(request):
     post_id = request.matchdict.get('id', None)
-    entry = Entry.search(post_id)
-    return entry
+    try:
+        entry = Entry.search(post_id)
+    except NoResultFound:
+        return HTTPNotFound('There is no post with this id.')
+    return {'entry': entry}
 
 
 @view_config(context=DBAPIError)
@@ -153,6 +157,7 @@ def main():
     config.add_route('add', '/add')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
+    config.add_route('detail', '/detail/{id:\d+}')
     config.scan()
     app = config.make_wsgi_app()
     return app

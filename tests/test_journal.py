@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 import os
 import pytest
-from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from pyramid import testing
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -15,9 +14,6 @@ os.environ['DATABASE_URL'] = TEST_DATABASE_URL
 os.environ['TESTING'] = "True"
 
 import journal
-
-
-
 
 
 @pytest.fixture(scope='function')
@@ -36,6 +32,17 @@ def auth_req(request):
     request.addfinalizer(cleanup)
 
     return req
+
+
+@pytest.fixture()
+def entry(db_session):
+    entry = journal.Entry.write(
+        title='Test Title',
+        text='Test Entry Text',
+        session=db_session
+    )
+    db_session.flush()
+    return entry
 
 
 def test_write_entry(db_session):
@@ -108,7 +115,14 @@ def test_read_entries_one(db_session):
         assert isinstance(entry, journal.Entry)
 
 
-
+def test_entry_search(db_session):
+    kwargs = {'title': 'Test Title', 'text': 'Test entry text'}
+    journal.Entry.write(**kwargs)
+    db_session.flush()
+    entry = journal.Entry.search(10)  # ORDER SENSITIVE
+    assert isinstance(entry, journal.Entry)
+    for field in kwargs:
+        assert getattr(entry, field, '') == kwargs[field]
 
 
 def test_empty_listing(app):
@@ -119,15 +133,7 @@ def test_empty_listing(app):
     assert expected in actual
 
 
-@pytest.fixture()
-def entry(db_session):
-    entry = journal.Entry.write(
-        title='Test Title',
-        text='Test Entry Text',
-        session=db_session
-    )
-    db_session.flush()
-    return entry
+
 
 
 def test_listing(app, entry):
@@ -242,7 +248,7 @@ def test_login_success(app):
     assert redirect.status_code == 302
     response = redirect.follow()
     assert response.status_code == 200
-    response = app.get('/create', status=200)
+    response = app.get('/add', status=200)
     actual = response.body
     assert INPUT_BTN in actual
 
@@ -253,7 +259,7 @@ def test_login_fails(app):
     assert response.status_code == 200
     actual = response.body
     assert "Login Failed" in actual
-    response = app.get('/create', status=200)
+    response = app.get('/add', status=200)
     actual = response.body
     assert INPUT_BTN not in actual
 
@@ -263,6 +269,6 @@ def test_logout(app):
     redirect = app.get('/logout', status="3*")
     response = redirect.follow()
     assert response.status_code == 200
-    response = app.get('/create', status=200)
+    response = app.get('/add', status=200)
     actual = response.body
     assert INPUT_BTN not in actual
