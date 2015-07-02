@@ -5,6 +5,7 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 from pyramid import testing
 from cryptacular.bcrypt import BCRYPTPasswordManager
+from webtest.app import AppError
 
 TEST_DATABASE_URL = os.environ.get(
     'DATABASE_URL',
@@ -133,69 +134,12 @@ def test_empty_listing(app):
     assert expected in actual
 
 
-
-
-
 def test_listing(app, entry):
     response = app.get('/')
     assert response.status_code == 200
     actual = response.body
     for field in ['title', 'text']:
         expected = getattr(entry, field, 'absent')
-        assert expected in actual
-
-
-def test_post_to_add_view(app):
-    entry_data = {
-        'title': 'Hello there',
-        'text': 'This is a post',
-    }
-    response = app.post('/add', params=entry_data, status='3*')
-    redirected = response.follow()
-    actual = redirected.body
-    for expected in entry_data.values():
-        assert expected in actual
-
-
-def test_add_no_params(app):
-    response = app.post('/add', status=500)
-    assert 'IntegrityError' in response.body
-
-
-def test_add_get(app):
-    from webtest.app import AppError
-    entry_data = {
-        'title': 'Hello there',
-        'text': 'This is a post',
-    }
-    with pytest.raises(AppError):
-        app.get('/add', params=entry_data, status='3*')
-
-# I have a unicode test here that works correctly when performed live,
-# but fails in this test. Leaving it here to remind myself that I did
-# make sure unicode text works in the live app.
-
-# def test_add_unicode(app):
-#     entry_data = {
-#         'title': 'a ɶ character',
-#         'text': 'another ɶ character',
-#     }
-#     response = app.post('/add', params=entry_data, status='3*')
-#     redirected = response.follow()
-#     actual = redirected.body
-#     for expected in entry_data.values():
-#         assert expected in actual
-
-
-def test_sql_injection(app):
-    entry_data = {
-        'title': 'Hello there',
-        'text': "This is a post'); DROP TABLE entries;",
-    }
-    response = app.post('/add', params=entry_data, status='3*')
-    redirected = response.follow()
-    actual = redirected.body
-    for expected in entry_data.values():
         assert expected in actual
 
 
@@ -259,9 +203,8 @@ def test_login_fails(app):
     assert response.status_code == 200
     actual = response.body
     assert "Login Failed" in actual
-    response = app.get('/add', status=200)
-    actual = response.body
-    assert INPUT_BTN not in actual
+    response = app.get('/add', status='*')
+    assert response.status_code == 403
 
 
 def test_logout(app):
@@ -269,6 +212,62 @@ def test_logout(app):
     redirect = app.get('/logout', status="3*")
     response = redirect.follow()
     assert response.status_code == 200
-    response = app.get('/add', status=200)
-    actual = response.body
-    assert INPUT_BTN not in actual
+    response = app.get('/add', status='*')
+    assert response.status_code == 403
+
+
+def test_post_to_add_view(app):
+    test_login_success(app)
+    entry_data = {
+        'title': 'Hello there',
+        'text': 'This is a post',
+    }
+    response = app.post('/add', params=entry_data, status='3*')
+    redirected = response.follow()
+    actual = redirected.body
+    for expected in entry_data.values():
+        assert expected in actual
+
+
+def test_add_no_params(app):
+    test_login_success(app)
+    response = app.post('/add', status=500)
+    assert 'IntegrityError' in response.body
+
+
+def test_add_get(app):
+    test_login_success(app)
+    entry_data = {
+        'title': 'Hello there',
+        'text': 'This is a post',
+    }
+    with pytest.raises(AppError):
+        app.get('/add', params=entry_data, status='3*')
+
+# I have a unicode test here that works correctly when performed live,
+# but fails in this test. Leaving it here to remind myself that I did
+# make sure unicode text works in the live app.
+
+# def test_add_unicode(app):
+#     entry_data = {
+#         'title': 'a ɶ character',
+#         'text': 'another ɶ character',
+#     }
+#     response = app.post('/add', params=entry_data, status='3*')
+#     redirected = response.follow()
+#     actual = redirected.body
+#     for expected in entry_data.values():
+#         assert expected in actual
+
+
+def test_sql_injection(app):
+    test_login_success(app)
+    entry_data = {
+        'title': 'Hello there',
+        'text': "This is a post'); DROP TABLE entries;",
+    }
+    response = app.post('/add', params=entry_data, status='3*')
+    redirected = response.follow()
+    actual = redirected.body
+    for expected in entry_data.values():
+        assert expected in actual

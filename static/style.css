@@ -23,6 +23,10 @@ label {
     text-align: right;
 }
 
+ul li {
+    list-style-type: none;
+}
+
 /*********************
 Heading
 *********************/
@@ -35,10 +39,6 @@ header {
 header h1, h2 {
     text-align: center;
     font-family: sans-serif;
-}
-
-aside ul li {
-    list-style-type: none;
 }
 
 /*********************

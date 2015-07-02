@@ -9,7 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 import datetime
 from sqlalchemy.orm import scoped_session, sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPForbidden
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm.exc import NoResultFound
 from pyramid.authentication import AuthTktAuthenticationPolicy
@@ -58,6 +58,16 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).filter_by(id=id).one()
 
+    @classmethod
+    def update(cls, id, title=None, text=None, session=None):
+        if session is None:
+            session = DBSession
+        entry = session.query(cls).filter_by(id=id).one()
+        entry.title = title
+        entry.text = text
+        return entry
+
+
 
 def init_db():
     engine = sa.create_engine(DATABASE_URL)
@@ -72,13 +82,16 @@ def list_view(request):
 
 @view_config(route_name='add', renderer='templates/create.jinja2')
 def add_entry(request):
-    if request.method == 'POST':
-        title = request.params.get('title')
-        text = request.params.get('text')
-        Entry.write(title=title, text=text)
-        return HTTPFound(request.route_url('home'))
+    if request.authenticated_userid:
+        if request.method == 'POST':
+            title = request.params.get('title')
+            text = request.params.get('text')
+            Entry.write(title=title, text=text)
+            return HTTPFound(request.route_url('home'))
+        else:
+            return {}
     else:
-        return {}
+        return HTTPForbidden()
 
 
 @view_config(route_name='detail', renderer='templates/detail.jinja2')
@@ -89,6 +102,24 @@ def detail_view(request):
     except NoResultFound:
         return HTTPNotFound('There is no post with this id.')
     return {'entry': entry}
+
+
+@view_config(route_name='edit', renderer='templates/edit.jinja2')
+def edit_entry(request):
+    if request.authenticated_userid:
+        post_id = request.matchdict.get('id', None)
+        try:
+            entry = Entry.search(post_id)
+        except NoResultFound:
+            return HTTPNotFound('There is no post with this id.')
+        if request.method == 'POST':
+            id = request.matchdict['id']
+            title = request.params.get('title')
+            text = request.params.get('text')
+            Entry.update(id=id, title=title, text=text)
+            return HTTPFound(request.route_url('home'))
+        else:
+            return {'entry': entry}
 
 
 @view_config(context=DBAPIError)
@@ -158,6 +189,7 @@ def main():
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('detail', '/detail/{id:\d+}')
+    config.add_route('edit', '/edit/{id:\d+}')
     config.scan()
     app = config.make_wsgi_app()
     return app
