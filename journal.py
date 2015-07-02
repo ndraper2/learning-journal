@@ -16,6 +16,7 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from pyramid.security import remember, forget
+import markdown
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -58,16 +59,6 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).filter_by(id=id).one()
 
-    @classmethod
-    def update(cls, id, title=None, text=None, session=None):
-        if session is None:
-            session = DBSession
-        entry = session.query(cls).filter_by(id=id).one()
-        entry.title = title
-        entry.text = text
-        return entry
-
-
 
 def init_db():
     engine = sa.create_engine(DATABASE_URL)
@@ -77,6 +68,9 @@ def init_db():
 @view_config(route_name='home', renderer='templates/list.jinja2')
 def list_view(request):
     entries = Entry.all()
+    for e in entries:
+        e.text = markdown.markdown(e.text,
+            extensions=['codehilite', 'fenced_code'])
     return {'entries': entries}
 
 
@@ -113,10 +107,8 @@ def edit_entry(request):
         except NoResultFound:
             return HTTPNotFound('There is no post with this id.')
         if request.method == 'POST':
-            id = request.matchdict['id']
-            title = request.params.get('title')
-            text = request.params.get('text')
-            Entry.update(id=id, title=title, text=text)
+            entry.title = request.params.get('title')
+            entry.text = request.params.get('text')
             return HTTPFound(request.route_url('home'))
         else:
             return {'entry': entry}
