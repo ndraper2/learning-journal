@@ -54,6 +54,10 @@ Index
     float: left;
 }
 
+.entry h3 {
+    float: left;
+}
+
 .dateline {
     float: right;
 }

@@ -120,6 +120,8 @@ def edit_entry(request):
             return HTTPFound(request.route_url('home'))
         else:
             return {'entry': entry}
+    else:
+        return HTTPForbidden()
 
 
 @view_config(context=DBAPIError)
