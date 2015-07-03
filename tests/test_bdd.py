@@ -39,3 +39,30 @@ def check_entry_list(homepage):
     html = homepage.html
     entries = html.find_all('article', class_='entry')
     assert len(entries) == 3
+
+
+@scenario('features/detail.feature',
+          'The Detail page displays an entry for an anonymous user')
+def test_detail_listing_as_anon():
+    pass
+
+
+@given('a journal entry')
+def create_one_entry(db_session):
+    journal.Entry.write(
+        title='A Title',
+        text='Some text',
+        session=db_session
+    )
+    db_session.flush()
+
+
+@when('the user visits the detail page for that entry')
+def visit_detail_page(detail_page):
+    pass
+
+
+@then('they see the one entry')
+def check_detail_entry(detail_page):
+    html = detail_page.html
+    assert 'A Title', 'Some text' in html

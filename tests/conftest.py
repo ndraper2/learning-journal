@@ -50,3 +50,9 @@ def app(db_session):
 def homepage(app):
     response = app.get('/')
     return response
+
+
+@pytest.fixture()
+def detail_page(app):
+    response = app.get('/detail/1')
+    return response
