@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import os
 import pytest
 from sqlalchemy.exc import IntegrityError
 from pyramid import testing
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from webtest.app import AppError
-
-TEST_DATABASE_URL = os.environ.get(
-    'DATABASE_URL',
-    'postgresql://ndraper2@localhost:5432/test-learning-journal'
-)
-os.environ['DATABASE_URL'] = TEST_DATABASE_URL
-os.environ['TESTING'] = "True"
 
 import journal
 

@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import os
 import pytest
 from sqlalchemy import create_engine
-from pytest_bdd import scenario, given, when, then
 
 
 import journal
