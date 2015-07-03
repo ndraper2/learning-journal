@@ -65,13 +65,14 @@ def init_db():
     Base.metadata.create_all(engine)
 
 
+def add_markdown(text):
+    return markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
+
+
 @view_config(route_name='home', renderer='templates/list.jinja2')
 def list_view(request):
     entries = Entry.all()
-    for e in entries:
-        e.text = markdown.markdown(e.text,
-            extensions=['codehilite', 'fenced_code'])
-    return {'entries': entries}
+    return {'entries': entries, 'add_markdown': add_markdown}
 
 
 @view_config(route_name='add', renderer='templates/create.jinja2')
@@ -95,7 +96,7 @@ def detail_view(request):
         entry = Entry.search(post_id)
     except NoResultFound:
         return HTTPNotFound('There is no post with this id.')
-    return {'entry': entry}
+    return {'entry': entry, 'add_markdown': add_markdown}
 
 
 @view_config(route_name='edit', renderer='templates/edit.jinja2')
