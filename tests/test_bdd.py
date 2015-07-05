@@ -55,14 +55,17 @@ def create_one_entry(db_session):
         session=db_session
     )
     db_session.flush()
+    # for entry in journal.Entry.all():
+    #     print entry.id, entry.title, entry.text
 
 
 @when('the user visits the detail page for that entry')
-def visit_detail_page(detail_page):
+def visit_detail_page(app):
     pass
 
 
 @then('they see the one entry')
-def check_detail_entry(detail_page):
-    html = detail_page.html
+def check_detail_entry(app):
+    response = app.get('/detail/4')
+    html = response.html
     assert 'A Title', 'Some text' in html

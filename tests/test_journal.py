@@ -112,7 +112,7 @@ def test_entry_search(db_session):
     kwargs = {'title': 'Test Title', 'text': 'Test entry text'}
     journal.Entry.write(**kwargs)
     db_session.flush()
-    entry = journal.Entry.search(10)  # ORDER SENSITIVE
+    entry = journal.Entry.search(11)  # ORDER SENSITIVE
     assert isinstance(entry, journal.Entry)
     for field in kwargs:
         assert getattr(entry, field, '') == kwargs[field]
