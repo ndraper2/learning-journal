@@ -28,17 +28,6 @@ def connection(request):
 
 
 @pytest.fixture()
-def db_session(request, connection):
-    from transaction import abort
-    trans = connection.begin()
-    request.addfinalizer(trans.rollback)
-    request.addfinalizer(abort)
-
-    from journal import DBSession
-    return DBSession
-
-
-@pytest.fixture()
 def app(db_session):
     from journal import main
     from webtest import TestApp

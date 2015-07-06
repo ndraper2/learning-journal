@@ -9,6 +9,17 @@ from webtest.app import AppError
 import journal
 
 
+@pytest.fixture()
+def db_session(request, connection):
+    from transaction import abort
+    trans = connection.begin()
+    request.addfinalizer(trans.rollback)
+    request.addfinalizer(abort)
+
+    from journal import DBSession
+    return DBSession
+
+
 @pytest.fixture(scope='function')
 def auth_req(request):
     manager = BCRYPTPasswordManager()
@@ -112,7 +123,7 @@ def test_entry_search(db_session):
     kwargs = {'title': 'Test Title', 'text': 'Test entry text'}
     journal.Entry.write(**kwargs)
     db_session.flush()
-    entry = journal.Entry.search(11)  # ORDER SENSITIVE
+    entry = journal.Entry.search(12)  # ORDER SENSITIVE
     assert isinstance(entry, journal.Entry)
     for field in kwargs:
         assert getattr(entry, field, '') == kwargs[field]
