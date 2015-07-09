@@ -110,7 +110,7 @@ def edit_entry(request):
         if request.method == 'POST':
             entry.title = request.params.get('title')
             entry.text = request.params.get('text')
-            return HTTPFound(request.route_url('home'))
+            return HTTPFound(request.route_url('detail', id=post_id))
         else:
             return {'entry': entry}
     else:
