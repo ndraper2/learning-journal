@@ -17,6 +17,7 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from pyramid.security import remember, forget
 import markdown
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -59,30 +60,42 @@ class Entry(Base):
             session = DBSession
         return session.query(cls).filter_by(id=id).one()
 
+    @property
+    def mkdown(self):
+        return markdown.markdown(self.text, extensions=['codehilite',
+                                 'fenced_code'])
+
+    @property
+    def created_(self):
+        return self.created.strftime('%b. %d, %Y')
+
 
 def init_db():
     engine = sa.create_engine(DATABASE_URL)
     Base.metadata.create_all(engine)
 
 
-def add_markdown(text):
-    return markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
+# def add_markdown(text):
+#     return markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
 
 
 @view_config(route_name='home', renderer='templates/list.jinja2')
 def list_view(request):
     entries = Entry.all()
-    return {'entries': entries, 'add_markdown': add_markdown}
+    return {'entries': entries}
 
-
+@view_config(route_name='add', xhr=True, renderer='json')
 @view_config(route_name='add', renderer='templates/create.jinja2')
 def add_entry(request):
     if request.authenticated_userid:
         if request.method == 'POST':
             title = request.params.get('title')
             text = request.params.get('text')
-            Entry.write(title=title, text=text)
-            return HTTPFound(request.route_url('home'))
+            entry = Entry.write(title=title, text=text)
+            if 'HTTP_X_REQUESTED_WITH' not in request.environ:
+                return HTTPFound(request.route_url('home'))
+            else:
+                return {'entry': entry}
         else:
             return {}
     else:
@@ -96,7 +109,7 @@ def detail_view(request):
         entry = Entry.search(post_id)
     except NoResultFound:
         return HTTPNotFound('There is no post with this id.')
-    return {'entry': entry, 'add_markdown': add_markdown}
+    return {'entry': entry}
 
 
 @view_config(route_name='edit', renderer='templates/edit.jinja2')

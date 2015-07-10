@@ -9,13 +9,19 @@ $( document ).ready( function() {
         $.ajax({
             url: "/add",
             type: "POST",
-            dataType: 'json',
-            data: { "title": $("#title").val(), 'text': $("#text").val},
+            dataType: "json",
+            data: { "title": $("#title").val(), "text": $("#text").val() },
         })
 
         .done(function(response) {
-            $("title").val = response.title;
-            $("text").val = response.text;
+            var $newElement = "<article class='entry' "+
+                              "id='"+response.id+"'>"+
+                              "<a href='/detail/"+response.id+"'"+
+                              "class='title'"+
+                              "<h3>"+response.title+"</h3></a>"+
+                              "<p class='dateline'>"+response.created_+"</p>"+
+                              "<div class='entry_body'>"+
+                              entry.mkdown+"</div></article>"
         })
 
         .fail(function(response) {

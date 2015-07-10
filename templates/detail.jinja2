@@ -7,9 +7,9 @@
   {% endif %}
   <article class="entry" id="entry={{entry.id}}">
     <h3 class="title">{{ entry.title }}</h3>
-    <p class="dateline">{{ entry.created.strftime('%b. %d, %Y') }}
+    <p class="dateline">{{ entry.created_ }}</p>
     <div class="entry_body">
-      {{ add_markdown(entry.text)|safe }}
+      {{ entry.mkdown | safe }}
     </div>
   </article>
 {% endblock %}
