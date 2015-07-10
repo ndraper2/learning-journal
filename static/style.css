@@ -26,7 +26,6 @@ label {
 ul li {
     list-style-type: none;
 }
-
 /*********************
 Heading
 *********************/
@@ -68,6 +67,10 @@ Index
     clear: both;
 }
 
+#createForm {
+    display: none;
+}
+
 
 /*********************
 Detail
@@ -107,6 +110,25 @@ textarea {
     margin-left: 11%;
     padding-left: .25em;
 }
+
+.overlay {
+    background: rgba(0,0,0,.7);
+    width: 80%;
+    max-width: 900px;
+    max-height: 400px;
+    height: 80%;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    margin-left: -25%;
+    display: none;
+    text-align: center;
+}
+
+.overlay .add_entry {
+    margin-left: -9%;
+}
+
 
 /*********************
 Footer
