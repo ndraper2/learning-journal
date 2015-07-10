@@ -21,7 +21,11 @@ $( document ).ready( function() {
                               "<h3>"+response.title+"</h3></a>"+
                               "<p class='dateline'>"+response.created_+"</p>"+
                               "<div class='entry_body'>"+
-                              entry.mkdown+"</div></article>"
+                              response.mkdown+"</div></article>";
+            $(".entry").before($newElement);
+            $("#createForm").hide();
+            $('#title').val('');
+            $('#text').val('');
         })
 
         .fail(function(response) {
@@ -31,11 +35,14 @@ $( document ).ready( function() {
 
     $("#addLink").click( function( event ) {
         event.preventDefault();
-        showCreateForm();
+        $("#createForm").show();
     });
 
-    function showCreateForm() {
-        $("#createForm").show()
-    };
+    $(document).click(function(event) {
+        if(!$(event.target).closest('#createForm').length
+        && !$(event.target).is('#addLink')) {
+            $('#createForm').hide();
+        }
+    });
 
 });

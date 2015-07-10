@@ -2,7 +2,7 @@
 {% block body %}
   {% if request.authenticated_userid %}
     <div id="add">
-      <a href="{{ request.route_url('edit', id=entry.id) }}" >Edit this post</a>
+      <a href="{{ request.route_url('edit', id=entry.id) }}" id="editLink" >Edit this post</a>
     </div>
   {% endif %}
   <article class="entry" id="entry={{entry.id}}">

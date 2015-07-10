@@ -17,7 +17,6 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from cryptacular.bcrypt import BCRYPTPasswordManager
 from pyramid.security import remember, forget
 import markdown
-import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -46,6 +45,7 @@ class Entry(Base):
             session = DBSession
         instance = cls(title=title, text=text)
         session.add(instance)
+        session.flush()
         return instance
 
     @classmethod
@@ -91,11 +91,16 @@ def add_entry(request):
         if request.method == 'POST':
             title = request.params.get('title')
             text = request.params.get('text')
-            entry = Entry.write(title=title, text=text)
+            new_entry = Entry.write(title=title, text=text)
             if 'HTTP_X_REQUESTED_WITH' not in request.environ:
                 return HTTPFound(request.route_url('home'))
             else:
-                return {'entry': entry}
+                entry = {'id': new_entry.id,
+                         'title': new_entry.title,
+                         'mkdown': new_entry.mkdown,
+                         'created_': new_entry.created_
+                         }
+                return entry
         else:
             return {}
     else:
