@@ -75,14 +75,11 @@ def init_db():
     Base.metadata.create_all(engine)
 
 
-# def add_markdown(text):
-#     return markdown.markdown(text, extensions=['codehilite', 'fenced_code'])
-
-
 @view_config(route_name='home', renderer='templates/list.jinja2')
 def list_view(request):
     entries = Entry.all()
     return {'entries': entries}
+
 
 @view_config(route_name='add', xhr=True, renderer='json')
 @view_config(route_name='add', renderer='templates/create.jinja2')
@@ -117,6 +114,7 @@ def detail_view(request):
     return {'entry': entry}
 
 
+@view_config(route_name='edit', xhr=True, renderer='json')
 @view_config(route_name='edit', renderer='templates/edit.jinja2')
 def edit_entry(request):
     if request.authenticated_userid:
@@ -128,7 +126,11 @@ def edit_entry(request):
         if request.method == 'POST':
             entry.title = request.params.get('title')
             entry.text = request.params.get('text')
-            return HTTPFound(request.route_url('detail', id=post_id))
+            if 'HTTP_X_REQUESTED_WITH' not in request.environ:
+                return HTTPFound(request.route_url('detail', id=post_id))
+            else:
+                entrydict = {'title': entry.title, 'mkdown': entry.mkdown}
+                return entrydict
         else:
             return {'entry': entry}
     else:

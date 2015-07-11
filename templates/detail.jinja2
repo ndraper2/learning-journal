@@ -12,4 +12,19 @@
       {{ entry.mkdown | safe }}
     </div>
   </article>
+  <div class="overlay" id="editForm">
+    <form action="{{ request.route_url('edit', id=entry.id) }}" method="POST" class="add_entry">
+      <div class="field">
+        <label for="title">Title</label>
+        <input type="text" size="30" name="title" id="title" value="{{ entry.title }}"/>
+      </div>
+      <div class="field">
+        <label for="text">Text</label>
+        <textarea name="text" id="text" rows="5" cols="80">{{ entry.text }}</textarea>
+      </div>
+      <div class="control_row">
+        <input id="editButton" type="submit" value="Share" name="Share"/>
+      </div>
+    </form>
+  </div>
 {% endblock %}

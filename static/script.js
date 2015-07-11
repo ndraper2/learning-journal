@@ -45,4 +45,35 @@ $( document ).ready( function() {
         }
     });
 
+    $("#editLink").click(function(event) {
+        event.preventDefault();
+        $("#editForm").show();
+    });
+
+    $("#editButton").click(function(event) {
+        event.preventDefault();
+        update();
+    });
+
+    function update() {
+        var pathArray = window.location.pathname.split("/");
+        $.ajax({
+            url: "/edit/"+pathArray[2],
+            type: "POST",
+            dataType: "json",
+            data: {"title": $("#title").val(),
+                   "text": $("#text").val()},
+        })
+
+        .done(function(response) {
+            $(".title").html(response.title);
+            $(".entry_body").html(response.mkdown);
+            $("#editForm").hide();
+        })
+
+        .fail(function(response) {
+            alert("error");
+        })
+    };
+
 });
