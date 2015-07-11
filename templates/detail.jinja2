@@ -12,6 +12,10 @@
       {{ entry.mkdown | safe }}
     </div>
   </article>
+  <div id="twitterWrapper">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-via="ndraper22">Tweet</a>
+  </div>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <div class="overlay" id="editForm">
     <form action="{{ request.route_url('edit', id=entry.id) }}" method="POST" class="add_entry">
       <div class="field">
