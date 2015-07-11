@@ -45,6 +45,13 @@ $( document ).ready( function() {
         }
     });
 
+    $(document).click(function(event) {
+        if(!$(event.target).closest('#editForm').length
+        && !$(event.target).is('#editLink')) {
+            $('#editForm').hide();
+        }
+    });
+
     $("#editLink").click(function(event) {
         event.preventDefault();
         $("#editForm").show();
