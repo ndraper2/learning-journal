@@ -18,6 +18,7 @@
     <p><em>No entries here so far</em></p>
   </div>
   {% endfor %}
+  {% if request.authenticated_userid %}
     <div class="overlay" id="createForm">
       <form action="{{ request.route_url('add') }}" method="POST" class="add_entry">
         <div class="field">
@@ -33,4 +34,5 @@
         </div>
       </form>
     </div>
+  {% endif %}
 {% endblock %}

@@ -58,13 +58,6 @@ def test_write_entry(db_session):
     entry = journal.Entry.write(**kwargs)
     # the entry we get back ought to be an instance of Entry
     assert isinstance(entry, journal.Entry)
-    # id and created are generated automatically, but only on writing to
-    # the database
-    auto_fields = ['id', 'created']
-    for field in auto_fields:
-        assert getattr(entry, field, None) is None
-    # flush the session to write the data to the database
-    db_session.flush()
     # now, we should have one entry
     assert db_session.query(journal.Entry).count() == 1
     for field in kwargs:
@@ -77,23 +70,20 @@ def test_write_entry(db_session):
 
 def test_write_entry_no_title(db_session):
     bad_data = {'text': 'test text'}
-    journal.Entry.write(session=db_session, **bad_data)
     with pytest.raises(IntegrityError):
-        db_session.flush()
+        journal.Entry.write(session=db_session, **bad_data)
 
 
 def test_entry_no_text(db_session):
     bad_data = {'title': 'test_title'}
-    journal.Entry.write(session=db_session, **bad_data)
     with pytest.raises(IntegrityError):
-        db_session.flush()
+        journal.Entry.write(session=db_session, **bad_data)
 
 
 def test_entry_extra_field(db_session):
     bad_data = {'title': 'test title', 'text': 'test text', 'footer': 'test footer'}
     with pytest.raises(TypeError):
         journal.Entry.write(session=db_session, **bad_data)
-        db_session.flush()
 
 
 def test_read_entries_empty(db_session):
@@ -111,7 +101,6 @@ def test_read_entries_one(db_session):
             text=text_template.format(x),
             session=db_session
         )
-        db_session.flush()
     entries = journal.Entry.all()
     assert len(entries) == 3
     assert entries[0].title > entries[1].title > entries[2].title
@@ -122,7 +111,6 @@ def test_read_entries_one(db_session):
 def test_entry_search(db_session):
     kwargs = {'title': 'Test Title', 'text': 'Test entry text'}
     journal.Entry.write(**kwargs)
-    db_session.flush()
     entry = journal.Entry.search(13)  # ORDER SENSITIVE
     assert isinstance(entry, journal.Entry)
     for field in kwargs:
@@ -172,7 +160,7 @@ def test_do_login_missing_params(auth_req):
             do_login(auth_req)
 
 
-INPUT_BTN = '<input type="submit" value="Share" name="Share"/>'
+INPUT_BTN = '<input id="addButton" type="submit" value="Share" name="Share"/>'
 
 
 def login_helper(username, password, app):
