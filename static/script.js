@@ -17,12 +17,12 @@ $( document ).ready( function() {
             var $newElement = "<article class='entry' "+
                               "id='"+response.id+"'>"+
                               "<a href='/detail/"+response.id+"'"+
-                              "class='title'"+
+                              "class='title'>"+
                               "<h3>"+response.title+"</h3></a>"+
                               "<p class='dateline'>"+response.created_+"</p>"+
                               "<div class='entry_body'>"+
                               response.mkdown+"</div></article>";
-            $(".entry").before($newElement);
+            $(".entry:first").before($newElement);
             $("#createForm").hide();
             $('#title').val('');
             $('#text').val('');
